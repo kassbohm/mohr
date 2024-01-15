@@ -1,0 +1,165 @@
+/* details>summary{color: #ffffff; font-weight: bold; padding: 4px; width: 100%; background-color: #1abc9c;}
+details>p{background-color: #dbfaf4;  padding: 4px; margin: 0;} */
+
+
+/* details>summary{color: #ffffff; font-weight: bold; padding: 4px; width: 100%; background-color: #343131;}
+details>p{background-color: #ffffff;  padding: 4px; margin: 0;} */
+
+/* details {
+   font: 16px "Open Sans", Calibri, sans-serif;
+   width: 620px;
+ } */
+
+/* 
+.wy-nav-content {
+  background-color: white;
+  /* color: white; */
+/* border: 2px solid black;
+  margin: 20px;
+  padding: 20px; 
+} */
+
+/* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> */
+
+
+
+/* h5p / H5P css mods in Wordpress:
+../general.css
+wp-content/plugins/h5pmods-wordpress-plugin-master/styles */
+
+/* font-family: 'Roboto'; */
+/* font-style: italic; */
+
+details>summary {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 5px;
+  width: 100%;
+  border: none;
+  background-color: #6ab0de;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  border-radius: 0px 0px 0 0;
+  cursor: pointer;
+}
+
+/* padding: 0px;  */
+/* font-family: 'Roboto'; */
+
+.myDiv {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 0px;
+  border: none;
+  background-color: #e7f2fa;
+  font-size: 16px;
+  color: #404040;
+}
+
+/* https://www.w3schools.com/css/tryit.asp?filename=trycss_syntax_id */
+/* https://github.com/surveyjs/survey-library/blob/master/src/defaultV2-theme/variables.scss */
+
+#surveyContainer {
+  --primary: #1abc9c;
+  --foreground: #404040;
+}
+
+
+body {
+  color: #404040;
+  font-size: 16px;
+  }
+p {
+  color: #404040;
+  /* font-family: 'Roboto'; */
+  /* font-size: 16px; */
+}
+
+/* font-family: 'Roboto';  */
+/* h1 {
+font-size: 25px; font-weight: bold; color: #404040;
+}
+h2 {
+font-size: 22px; font-weight: bold; color: #404040;
+}
+h3 {
+font-size: 18px; font-weight: bold; color: #404040;
+}
+h4 {
+font-size: 16px; font-weight: bold; color: #404040;
+}
+h5 {
+font-size: 14px; font-weight: bold; color: #404040;
+}
+h6 {
+font-size: 12px; font-weight: bold; color: #404040;
+} 
+   */
+  /* Modifies all captions! Also figure captions */
+/* span.caption-text {
+    font-family: 'Roboto';
+    font-size: 20px;
+    font-weight: bold;
+    color: #505050;
+  } */
+
+/* color of Caption text in Sidebar: */
+/* .wy-menu > .caption > span.caption-text {
+  color: #ffffff;
+  font-family: 'Roboto';
+  font-size: 14px;
+  text-transform: None;
+}
+
+  </style> */
+
+/* sphinx-design: */
+/* color #3091d1 */
+/* color #6ab0de */
+
+:root {
+  --sd-color-primary: #3091d1;
+  --sd-color-secondary: #6ab0de;
+  --sd-color-success: #28a745;
+  --sd-color-info: #17a2b8;
+  --sd-color-warning: #f0b37e;
+  --sd-color-danger: #dc3545;
+  --sd-color-light: #f8f9fa;
+  --sd-color-muted: #6c757d;
+  --sd-color-dark: #212529;
+  --sd-color-primary-highlight: #3091d1;
+  --sd-color-secondary-highlight: #5c636a;
+  --sd-color-success-highlight: #228e3b;
+  --sd-color-info-highlight: #148a9c;
+  --sd-color-warning-highlight: #cc986b;
+  --sd-color-danger-highlight: #bb2d3b;
+  --sd-color-light-highlight: #d3d4d5;
+  --sd-color-muted-highlight: #5c636a;
+  --sd-color-dark-highlight: #1c1f23;
+  --sd-color-primary-text: #fff;
+  --sd-color-secondary-text: #fff;
+  --sd-color-success-text: #fff;
+  --sd-color-info-text: #fff;
+  --sd-color-warning-text: #212529;
+  --sd-color-danger-text: #fff;
+  --sd-color-light-text: #212529;
+  --sd-color-muted-text: #fff;
+  --sd-color-dark-text: #fff;
+  --sd-color-shadow: rgba(0, 0, 0, 0.15);
+  --sd-color-card-border: rgba(0, 0, 0, 0.125);
+  --sd-color-card-border-hover: #3091d1;
+  --sd-color-card-background: transparent;
+  --sd-color-card-text: inherit;
+  --sd-color-card-header: transparent;
+  --sd-color-card-footer: transparent;
+  --sd-color-tabs-label-active: #3091d1;
+  --sd-color-tabs-label-hover: #3091d1;
+  --sd-color-tabs-label-inactive: hsl(0, 0%, 66%);
+  --sd-color-tabs-underline-active: #3091d1;
+  --sd-color-tabs-underline-hover: rgba(178, 206, 245, 0.62);
+  --sd-color-tabs-underline-inactive: transparent;
+  --sd-color-tabs-overline: rgb(222, 222, 222);
+  --sd-color-tabs-underline: rgb(222, 222, 222);
+  --sd-fontsize-tabs-label: 1rem
+}

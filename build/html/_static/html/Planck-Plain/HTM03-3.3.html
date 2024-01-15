@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <title>Planck</title>
+      <script type="text/javascript" src="../CDN/planck-with-testbed.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.min.js"></script>
+      <style>
+      </style>
+   </head>
+   <div id="rp1" style="position:absolute; left: 79%; top:10px; font-family: 'Lato', sans-serif; font-weight: 300; font-size: 12px; color:white;"></div>
+   <div id="rw1" style="position:absolute; left:  2%; top:10px; font-family: 'Lato', sans-serif; font-weight: 300; font-size: 12px; color:white; background-color: #00FFFF; border:1px; border-style: solid; border-color: white"></div>
+   <div id="rw2" style="position:absolute; left:  2%; top:35px; font-family: 'Lato', sans-serif; font-weight: 300; font-size: 12px; color:white; background-color: #343131; border:1px; border-style: solid; border-color: white"></div>
+   <div id="rw3" style="position:absolute; left:  2%; top:60px; font-family: 'Lato', sans-serif; font-weight: 300; font-size: 12px; color:white; background-color: #FF00FF; border:1px; border-style: solid; border-color: white"></div>
+   <div id="p1"  style="position:absolute; left: 86%; top:10px; font-family: 'Lato', sans-serif; font-weight: 300; font-size: 12px; color:white"></div>
+   <div id="w1"  style="position:absolute; left:  8%; top:10px; font-family: 'Lato', sans-serif; font-weight: 300; font-size: 12px; color:white"></div>
+   <div id="w2"  style="position:absolute; left:  8%; top:35px; font-family: 'Lato', sans-serif; font-weight: 300; font-size: 12px; color:white"></div>
+   <div id="w3"  style="position:absolute; left:  8%; top:60px; font-family: 'Lato', sans-serif; font-weight: 300; font-size: 12px; color:white"></div>
+   <div id="keys" style="position:absolute; left: 2%; top:355px; font-family: 'Lato', sans-serif;font-weight: 300; font-size: 12px; color:white"></div>
+   <body>
+<script type="text/javascript">
+planck.testbed("HTM03-3.3", function (testbed) {
+  // # paletton:
+  // # base color: #1abc9c
+  // # triad
+  // # shiny
+  // testbed.mouseForce = -10;
+  // only p = 60° is used here:
+  const p1 = (60 * Math.PI) / 180;
+  const p2 = (27.208557 * Math.PI) / 180;
+  const p3 = (81.989875 * Math.PI) / 180;
+  // const p2 = (261.989875 * Math.PI) / 180;
+  // const p3 = (207.208557 * Math.PI) / 180;
+
+  const c1 = Math.cos(p1);
+  const s1 = Math.sin(p1);
+  const c2 = Math.cos(p2);
+  const s2 = Math.sin(p2);
+  const c3 = Math.cos(p3);
+  const s3 = Math.sin(p3);
+
+  var motorSpeed = 0.0;
+
+  const a = 20;
+  const t = a / 30; // t: 1 bed: 50
+
+  const b = a;
+  const h = a / 10;
+
+  testbed.x = b/2-0.27*a;
+  testbed.y = -0.03 * a;
+
+  // Viewbox size:
+  testbed.width = 2.5*a;
+  testbed.height = testbed.width;
+
+
+  var pl = planck,
+    Vec2 = pl.Vec2;
+  var world = new pl.World(Vec2(0, 0));
+
+  var b2 = world.createBody({
+    type: "dynamic",
+    position: Vec2((a / 2) * c1 + (a / 2) * c2, (a / 2) * s1 + (a / 2) * s2),
+    angle: p2
+  });
+  b2.createFixture({
+    shape: pl.Box(a / 2, t / 2),
+    density: 0.00001,
+    isSensor: true, // no collisions
+    filterGroupIndex: -1
+  });
+  b2.render = { fill: "#343131", stroke: "white" };
+
+
+    var b2b = world.createBody({
+    type: "dynamic",
+    position: Vec2((a / 2) * c1 + (a / 2) * c2 - a/4*s2, (a / 2) * s1 + (a / 2) * s2+a/4*c2),
+    angle: p2+Math.PI/2
+  });
+  b2b.createFixture({
+    shape: pl.Box(a / 4, t / 2),
+    density: 0.00001,
+    isSensor: true, // no collisions
+    filterGroupIndex: -1
+  });
+  b2b.render = { fill: "#343131", stroke: "white" };
+
+    var b1 = world.createBody({
+    type: "dynamic",
+    position: Vec2((a / 4) * c1, (a / 4) * s1),
+    angle: Math.PI / 3
+  });
+  b1.createFixture({
+    shape: pl.Box(a / 4, t / 2),
+    density: 1.0,
+    isSensor: true, // no collisions
+    filterGroupIndex: -1
+  });
+  b1.render = { fill: "#00FFFF", stroke: "white" };
+
+  var b3 = world.createBody({
+    type: "dynamic",
+    position: Vec2(b + (a / 2) * c3, -h + (a / 2) * s3),
+    // angle: Math.PI / 2 + phi
+    angle: p3
+  });
+  b3.createFixture({
+    shape: pl.Box(a / 2, t / 2),
+    density: 0.00001,
+    isSensor: true, // no collisions
+    filterGroupIndex: -1
+  });
+  b3.render = { fill: "#FF00FF", stroke: "white" };
+
+    var ground = world.createBody();
+  ground.createFixture(pl.Chain([
+    Vec2(0, 0),
+    Vec2(a, 0),
+    Vec2(a, a),
+    Vec2(0, a),
+    Vec2(0, 0),
+  ]), 0.0);
+    var ground2 = world.createBody();
+  ground.createFixture(pl.Chain([
+    Vec2(0, 0),
+    Vec2(0, -a),
+    Vec2(a, -a),
+    Vec2(a, 0),
+  ]), 0.0);
+
+  var j_ground_b1 = world.createJoint(
+    pl.RevoluteJoint(
+      {
+        motorSpeed: 0,
+        maxMotorTorque: 500,
+        enableMotor: true
+      },
+      b1,
+      ground,
+      Vec2(0.0, 0.0)
+    )
+  );
+  var j_ground_b3 = world.createJoint(
+    pl.RevoluteJoint(
+      {
+        motorSpeed: 0,
+        maxMotorTorque: 10000,
+        enableMotor: false
+      },
+      b3,
+      ground,
+      Vec2(b, -h)
+    )
+  );
+  var j_b1_b2 = world.createJoint(
+    pl.RevoluteJoint(
+      {
+        motorSpeed: 0,
+        maxMotorTorque: 10000,
+        enableMotor: false
+      },
+      b1,
+      b2,
+      Vec2((a / 2) * c1, (a / 2) * s1)
+    )
+  );
+
+    var j_b2_b3 = world.createJoint(
+    pl.RevoluteJoint(
+      {
+        motorSpeed: 0,
+        maxMotorTorque: 10000,
+        enableMotor: false
+      },
+      b2,
+      b3,
+      Vec2((a / 2) * c1 + a*c2, (a / 2) * s1 + a*s2)
+    )
+  );
+
+      var j_b2_b2b = world.createJoint(
+    pl.WeldJoint(
+      {
+        motorSpeed: 0,
+        maxMotorTorque: 10000,
+        enableMotor: false
+      },
+      b2,
+      b2b,
+      Vec2((a / 2) * c1 + a/2*c2, (a / 2) * s1 + a/2*s2)
+    )
+  );
+
+  testbed.step = function () {
+    var a1 =  (b1.getAngle()+2*Math.PI)%(2*Math.PI)*180/Math.PI;
+    var w1 = b1.getAngularVelocity();;
+    var w2 = b2.getAngularVelocity();
+    var w3 = b3.getAngularVelocity();
+    console.log("φ₁: ".concat(a1.toFixed(1)));
+    console.log("ω₁: ".concat(w1.toFixed(3)));
+    console.log("ω₂: ".concat(w2.toFixed(3)));
+    console.log("ω₃: ".concat(w3.toFixed(3)));
+    document.getElementById('rp1').innerText = "φ₁:";
+    document.getElementById('rw1').innerText = "↺";
+    document.getElementById('rw2').innerText = "↺";
+    document.getElementById('rw3').innerText = "↺";
+    document.getElementById('p1').innerText = a1.toFixed(1).concat(" °");
+    document.getElementById('w1').innerText = w1.toFixed(3).concat(" s⁻¹");
+    document.getElementById('w2').innerText = w2.toFixed(3).concat(" s⁻¹");
+    document.getElementById('w3').innerText = w3.toFixed(3).concat(" s⁻¹");
+    document.getElementById('keys').innerText = "Motor: Press ← or →. Pause: Press P.";
+
+    if (testbed.activeKeys.left) {
+      motorSpeed = motorSpeed - 0.01;
+      motorSpeed = Math.max(-2*Math.PI/10, motorSpeed);
+      j_ground_b1.setMotorSpeed(motorSpeed);
+      j_ground_b1.enableMotor(true);
+    } else if (testbed.activeKeys.right) {
+      motorSpeed = motorSpeed + 0.01;
+      motorSpeed = Math.min(2*Math.PI/10, motorSpeed);
+      j_ground_b1.setMotorSpeed(motorSpeed);
+      j_ground_b1.enableMotor(true);
+    }
+  };
+  return world;
+});
+     </script>
+   </body>
+</html>

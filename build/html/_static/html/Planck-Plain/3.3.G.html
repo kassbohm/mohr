@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <title>Planck</title>
+      <script type="text/javascript" src="../CDN/planck-with-testbed.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.min.js"></script>
+      <style>
+      </style>
+   </head>
+   <div id="rw1" style="position:absolute; left:  2%; top:10px; font-family: 'Lato', sans-serif; font-weight: 300; font-size: 12px; color:white; background-color: #343131
+
+; border:1px; border-style: solid;; border-color: white"></div>
+   <div id="rw2" style="position:absolute; left: 22%; top:10px; font-family: 'Lato', sans-serif; font-weight: 300; font-size: 12px; color:white; background-color: #FF00FF; border:1px; border-style: solid;; border-color: white"></div>
+   <div id="rw3" style="position:absolute; left: 42%; top:10px; font-family: 'Lato', sans-serif; font-weight: 300; font-size: 12px; color:white; background-color: #00FFFF; border:1px; border-style: solid;; border-color: white"></div>
+   <div id="w1"  style="position:absolute; left:  2%; top:33px; font-family: 'Lato', sans-serif; font-weight: 300; font-size: 12px; color:white"></div>
+   <div id="w2"  style="position:absolute; left: 22%; top:33px; font-family: 'Lato', sans-serif; font-weight: 300; font-size: 12px; color:white"></div>
+   <div id="w3"  style="position:absolute; left: 42%; top:33px; font-family: 'Lato', sans-serif; font-weight: 300; font-size: 12px; color:white"></div>
+   <div id="keys" style="position:absolute; left: 2%; top:355px; font-family: 'Lato', sans-serif;font-weight: 300; font-size: 12px; color:white"></div>
+   <body>
+<script type="text/javascript">
+
+  planck.testbed("3.3.G", function (testbed) {
+  var motorSpeed = 0.0;
+
+  let a = 12;
+  let t = 0.6; // t: 0.6, bed: 50
+
+  testbed.x = 0.5 * a;
+  testbed.y = -1.5 * a;
+
+  // Viewbox size:
+  testbed.width = 50;
+  testbed.height = testbed.width;
+  // testbed.mouseForce = -10;
+
+  let h = (a / 2) * Math.sqrt(15);
+  let phi = Math.acos(h / (2 * a));
+
+  var pl = planck,
+    Vec2 = pl.Vec2;
+  var world = new pl.World(Vec2(0, 0));
+
+  var ground = world.createBody();
+  ground.createFixture(pl.Edge(Vec2(0.0, -a), Vec2(0.0, -a)), 0.0);
+
+  var b1 = world.createBody({
+    type: "dynamic",
+    position: Vec2(a / 2, a),
+    angle: 0
+  });
+  b1.createFixture(pl.Box(a / 2, t / 2), 1.0);
+  // # paletton:
+  // # base color: #FF00FF
+  // # triad
+  // # shiny
+  b1.render = { fill: "#343131", stroke: "white" };
+
+  var b2 = world.createBody({
+    type: "dynamic",
+    position: Vec2(a + a / 4, a + h / 2),
+    angle: Math.PI / 2 - phi
+  });
+  b2.createFixture(pl.Box(a, t / 2), 0.00001);
+  b2.render = { fill: "#FF00FF", stroke: "white" };
+
+  var b3 = world.createBody({
+    type: "dynamic",
+    position: Vec2(2 * a - a / 4, a + h / 2),
+    // angle: Math.PI / 2 + phi
+    angle: Math.PI / 2 + phi
+  });
+  b3.createFixture(pl.Box(a, t / 2), 0.00001);
+  b3.render = { fill: "#00FFFF", stroke: "white" };
+
+  var pinA = world.createJoint(
+    pl.RevoluteJoint(
+      {
+        motorSpeed: 0,
+        maxMotorTorque: 4000,
+        enableMotor: false
+      },
+      b1,
+      ground,
+      Vec2(0.0, a)
+    )
+  );
+
+  let pinB = world.createJoint(
+    pl.RevoluteJoint({
+      bodyA: b1,
+      bodyB: b2,
+      localAnchorA: Vec2(a / 2, 0),
+      localAnchorB: Vec2(-a, 0)
+    })
+  );
+
+  let pinC = world.createJoint(
+    pl.RevoluteJoint({
+      bodyA: b2,
+      bodyB: b3,
+      localAnchorA: Vec2(a, 0),
+      localAnchorB: Vec2(a, 0)
+    })
+  );
+
+  let pinD = world.createJoint(
+    pl.RevoluteJoint({
+      bodyA: b3,
+      bodyB: ground,
+      localAnchorA: Vec2(-a, 0),
+      localAnchorB: Vec2(2 * a, a)
+    })
+  );
+
+  // testbed.keydown = function() {
+  //   if (testbed.activeKeys.down) {
+  //     motorTorque = Math.max(0.0, motorTorque - 10000.0);
+  //     pinA.setMaxMotorTorque(motorTorque);
+  //
+  //   } else if (testbed.activeKeys.up) {
+  //     motorTorque += 10000.0;
+  //     pinA.setMaxMotorTorque(motorTorque);
+  //   }
+  // };
+
+  testbed.step = function () {
+    var w1 = pinA.getJointSpeed();
+    var w2 = b2.getAngularVelocity();
+    var w3 = -pinD.getJointSpeed();
+    // console.log("ω₁: ".concat(w1.toFixed(2)));
+    // console.log("ω2: ".concat(w2.toFixed(2)));
+    // console.log("ω₃: ".concat(w3.toFixed(2)));
+
+    document.getElementById('rw1').innerText = "↻";
+    document.getElementById('rw2').innerText = "↺";
+    document.getElementById('rw3').innerText = "↺";
+    document.getElementById('w1').innerText = w1.toFixed(2).concat(" s⁻¹");
+    document.getElementById('w2').innerText = w2.toFixed(2).concat(" s⁻¹");
+    document.getElementById('w3').innerText = w3.toFixed(2).concat(" s⁻¹");
+    document.getElementById('keys').innerText = "Motor: Press ← or →. Pause: Press P.";
+
+    if (testbed.activeKeys.left && testbed.activeKeys.right) {
+      //       pinA.setMotorSpeed(0);
+      //       motorSpeed = 0;
+      pinA.enableMotor(true);
+    } else if (testbed.activeKeys.left) {
+      motorSpeed = motorSpeed - 0.03;
+      motorSpeed = Math.max(-4, motorSpeed);
+      pinA.setMotorSpeed(motorSpeed);
+      pinA.enableMotor(true);
+    } else if (testbed.activeKeys.right) {
+      motorSpeed = motorSpeed + 0.03;
+      motorSpeed = Math.min(4, motorSpeed);
+      pinA.setMotorSpeed(motorSpeed);
+      pinA.enableMotor(true);
+    }
+  };
+  return world;
+});
+     </script>
+   </body>
+</html>

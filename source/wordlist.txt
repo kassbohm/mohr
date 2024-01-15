@@ -1,0 +1,1 @@
+../../tm.tm-tutor.de/source/wordlist.txt

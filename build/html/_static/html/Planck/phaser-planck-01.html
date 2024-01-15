@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <title>MatterJS</title>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/planck-js/0.2.7/planck.min.js"></script>
+   </head>
+   <body>
+      <script type="text/javascript">
+let game;
+window.onload = function () {
+  let gameConfig = {
+    type: Phaser.AUTO,
+    backgroundColor: "#343131",
+    scale: {
+      // mode: Phaser.Scale.FIT,
+      // autoCenter: Phaser.Scale.CENTER_BOTH,
+      parent: "thegame",
+      width: 375,
+      height: 375
+    },
+    scene: playGame
+  };
+  game = new Phaser.Game(gameConfig);
+  window.focus();
+};
+class playGame extends Phaser.Scene {
+  constructor() {
+    super("PlayGame");
+  }
+  create() {
+    // Box2D works with meters. We need to convert meters to pixels.
+    // let's say 30 pixels = 1 meter.
+    this.worldScale = 30;
+
+    // world gravity, as a Vec2 object. It's just a x, y vector
+    let gravity = planck.Vec2(0, 3);
+
+    // this is how we create a Box2D world
+    this.world = planck.World(gravity);
+
+    // creation of the pivot body and the bar body with createBox, see below:
+    let pivot = this.createBox(
+      game.config.width / 2,
+      (game.config.height / 5) * 4,
+      30,
+      30,
+      false
+    );
+    
+    let bar = this.createBox(
+      game.config.width / 2,
+      (game.config.height / 5) * 4.5,
+      game.config.width * 0.9,
+      20,
+      true
+    );
+
+    // a revolute joint
+    this.revoluteJoint = this.world.createJoint(
+      planck.RevoluteJoint({
+        // first body
+        bodyA: pivot,
+        // second body
+        bodyB: bar,
+        // bodies acnhor point
+        anchorPoint: bar.getWorldCenter(),
+        // max motor torque force
+        maxMotorTorque: 200,
+        // motor speed
+        motorSpeed: 0,
+        // the motor is enabled
+        enableMotor: true
+      })
+    );
+
+    // the rest of the script just creates a random box each 1500ms, then restarts after 100 iterations
+    this.tick = 0;
+    this.time.addEvent({
+      delay: 1500,
+      callbackScope: this,
+      callback: function () {
+        this.createBox(
+          Phaser.Math.Between(100, game.config.width - 100),
+          -100,
+          Phaser.Math.Between(10, 50),
+          Phaser.Math.Between(10, 50),
+          true
+        );
+        this.tick++;
+        if (this.tick == 18) {
+          this.scene.start("PlayGame");
+        }
+      },
+      loop: true
+    });
+  }
+
+  // here we go with some Box2D stuff
+  // arguments: x, y coordinates of the center, with and height of the box, in pixels
+  // we'll conver pixels to meters inside the method
+  createBox(posX, posY, width, height, isDynamic) {
+    // this is how we create a generic Box2D body
+    let box = this.world.createBody();
+    if (isDynamic) {
+      // Box2D bodies born as static bodies, but we can make them dynamic
+      box.setDynamic();
+    }
+
+    // a body can have one or more fixtures. This is how we create a box fixture inside a body
+    box.createFixture(
+      planck.Box(width / 2 / this.worldScale, height / 2 / this.worldScale)
+    );
+
+    // now we place the body in the world
+    box.setPosition(
+      planck.Vec2(posX / this.worldScale, posY / this.worldScale)
+    );
+
+    // time to set mass information
+    box.setMassData({
+      mass: 1,
+      center: planck.Vec2(),
+
+      // I have to say I do not know the meaning of this "I", but if you set it to zero, bodies won't rotate
+      I: 1
+    });
+
+    // now we create a graphics object representing the body
+    var color = new Phaser.Display.Color();
+    color.random();
+    color.brighten(50).saturate(100);
+    let userData = this.add.graphics();
+    userData.fillStyle(color.color, 1);
+    userData.fillRect(-width / 2, -height / 2, width, height);
+
+    // a body can have anything in its user data, normally it's used to store its sprite
+    box.setUserData(userData);
+
+    return box;
+  }
+
+  update(t, dt) {
+    // advance world simulation
+    this.world.step((dt / 1000) * 2);
+    // clearForces method should be added at the end on each step
+    this.world.clearForces();
+    // adjust joint motor speed according to its angle
+    this.revoluteJoint.setMotorSpeed(this.revoluteJoint.getJointAngle() * -0.5);
+    // iterate through all bodies
+    for (let b = this.world.getBodyList(); b; b = b.getNext()) {
+      // get body position
+      let bodyPosition = b.getPosition();
+      // get body angle, in radians
+      let bodyAngle = b.getAngle();
+      // get body user data, the graphics object
+      let userData = b.getUserData();
+      // adjust graphic object position and rotation
+      userData.x = bodyPosition.x * this.worldScale;
+      userData.y = bodyPosition.y * this.worldScale;
+      userData.rotation = bodyAngle;
+    }
+  }
+}
+     </script>
+   </body>
+</html>

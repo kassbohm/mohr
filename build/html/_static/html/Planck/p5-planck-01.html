@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <title>Planck</title>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/planck-js/0.2.7/planck.min.js"></script>
+   </head>
+   <body>
+      <script type="text/javascript">
+const coordPixelToWorld = (x, y) => {
+  const translate = (a) => (400 * a) / 700 - 200;
+  return {
+    x: translate(x),
+    y: -1 * translate(y)
+  };
+};
+
+const coordWorldToPixel = (x, y) => {
+  const translate = (a) => (700 * a + 140000) / 400;
+  const translateY = (a) => (700 * a - 140000) / -400;
+  return {
+    x: translate(x),
+    y: translateY(y)
+  };
+};
+
+const dimensionToWorld = (width) => {
+  const translate = (a) => (400 * a) / 700;
+  return translate(width / 2);
+};
+
+const canvasSize = {
+  width: 375,
+  height: 375
+};
+
+let boxList = [];
+let world;
+
+const createBox = (x, y) => {
+  const location = createVector(x, y);
+  const width = 20;
+  const locationInWorld = coordPixelToWorld(location.x, location.y);
+  const bodyDef = {
+    type: "dynamic",
+    position: planck.Vec2(locationInWorld.x, locationInWorld.y)
+  };
+
+  const widthInWorld = dimensionToWorld(width);
+  const polygonShape = planck.Box(widthInWorld, widthInWorld);
+
+  const body = world.createBody(bodyDef);
+  body.createFixture(polygonShape, {
+    density: 1,
+    restitution: 50,
+    friction: 0.3
+  });
+
+  const draw = () => {
+
+   colorMode(HSB, 255);
+   let c = color(random(255), random(255)+100, random(255)+50);
+
+  noStroke();
+  fill(c);
+  // rect(200,200,100,100);
+    // fill("#1abc9c");
+
+    push();
+    const locationInWorld = body.getPosition();
+    const location = coordWorldToPixel(locationInWorld.x, locationInWorld.y);
+    translate(location.x, location.y);
+    const angle = body.getAngle();
+    rotate(-angle);
+    rect(-width / 2, -width / 2, width, width);
+    pop();
+  };
+
+  const update = () => {};
+
+  return {
+    draw,
+    update
+  };
+};
+
+// const createTerrain = (height) => {
+//   const verticesFrequency = canvasSize.width / 4;
+//   const fnSinX = (x) => 10 * Math.sin(((2 * Math.PI) / verticesFrequency) * x);
+//   let vertices = [];
+//   const lenX = canvasSize.width / verticesFrequency;
+//   for (let i = 0; i <= verticesFrequency; i++) {
+//     vertices.push(createVector(i * lenX, fnSinX(i * lenX) * -1));
+//   }
+
+//   vertices.push(createVector(canvasSize.width, height));
+//   vertices.push(createVector(0, height));
+
+//   const locationInWorld = coordPixelToWorld(0, canvasSize.height - height);
+//   // console.log("locationInWorld", locationInWorld);
+
+//   const bodyDef = {
+//     type: "static",
+//     position: planck.Vec2(locationInWorld.x, locationInWorld.y)
+//   };
+//   // console.log("vertices", vertices);
+
+//   const verticesInWorld = vertices.map((point) => {
+//     const location = {
+//       x: dimensionToWorld(point.x * 2),
+//       y: dimensionToWorld(point.y * 2) * -1
+//     };
+//     return planck.Vec2(location.x, location.y);
+//   });
+//   // console.log("verticesInWorld", verticesInWorld);
+
+//   const chainShape = planck.Chain(verticesInWorld);
+//   const body = world.createBody(bodyDef);
+//   body.createFixture(chainShape, 1);
+
+//   const draw = () => {
+//     fill("#343131");
+//     push();
+//     translate(0, canvasSize.height - height);
+//     beginShape();
+//     vertices.forEach((point) => {
+//       vertex(point.x, point.y);
+//     });
+//     endShape();
+//   };
+
+//   return {
+//     draw
+//   };
+// };
+
+// let terrain;
+
+function setup() {
+  createCanvas(canvasSize.width, canvasSize.height);
+  world = planck.World({
+    gravity: planck.Vec2(0, -200)
+  });
+
+  // terrain = createTerrain(100);
+}
+
+function draw() {
+  background("#343131");
+  world.step(1 / 60);
+  if (mouseIsPressed) {
+    boxList.push(createBox(mouseX, mouseY));
+  }
+  // boxList.push(createBox(200,200));
+  boxList.forEach((box) => {
+    box.update();
+    box.draw();
+  });
+
+  // terrain.draw();
+}
+     </script>
+   </body>
+</html>

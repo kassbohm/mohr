@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <title>MatterJS</title>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/planck-js/0.2.7/planck.min.js"></script>
+   </head>
+   <body>
+      <script type="text/javascript">
+let game;
+window.onload = function () {
+  let gameConfig = {
+    type: Phaser.AUTO,
+    backgroundColor: '#343131',
+    scale: {
+      // mode: Phaser.Scale.FIT,
+      // autoCenter: Phaser.Scale.CENTER_BOTH,
+      parent: "thegame",
+      width: 375,
+      height: 375
+    },
+    scene: playGame
+  };
+  game = new Phaser.Game(gameConfig);
+  window.focus();
+};
+class playGame extends Phaser.Scene {
+  constructor() {
+    super("PlayGame");
+  }
+  create() {
+    // Box2D works with meters. We need to convert meters to pixels.
+    // let's say 30 pixels = 1 meter.
+    this.worldScale = 30;
+
+    // world gravity, as a Vec2 object. It's just a x, y vector
+    let gravity = planck.Vec2(0, 3);
+
+    // this is how we create a Box2D world
+    this.world = planck.World(gravity);
+
+    // createBox is a method I wrote to create a box, see how it works below
+    // Ground (static):
+    this.createBox(
+      false,
+      game.config.width / 2,   // x in planck
+      game.config.height - 10, // y
+      game.config.width,       // width
+      20,                      // height
+    );
+
+    // the rest of the script just creates a random box each 500ms, then restarts
+    this.tick = 0;
+    // Many events:
+    this.time.addEvent({
+      delay: 1500,
+      callbackScope: this,
+      callback: function () {
+        this.createBox(
+          true,
+          Phaser.Math.Between(100, game.config.width - 100), // x
+          -100,                                              // y
+          Phaser.Math.Between(10, 50),                       // width
+          Phaser.Math.Between(10, 50),                       // height
+        );
+        this.tick++;
+        // restart after some ticks:
+        if (this.tick == 18) {
+          this.scene.start("PlayGame");
+        }
+      },
+      loop: true
+    });
+  }
+
+  // Box2D
+  // Convert pixels to meters inside the method
+  createBox(isDynamic, x, y, width, height) {
+    // Box2D body:
+    let box = this.world.createBody();
+    if (isDynamic) {
+      box.setDynamic();
+      // box.setKinematic();
+    }
+    box.createFixture(
+      planck.Box(width / 2 / this.worldScale, height / 2 / this.worldScale)
+    );
+    // now we place the body in the world
+    box.setPosition(
+      planck.Vec2(x / this.worldScale, y / this.worldScale)
+    );
+
+    // time to set mass information
+    box.setMassData({
+      mass: 1,
+      center: planck.Vec2(),
+      I: 1
+    });
+
+    // Graphics object representing the body:
+    var color = new Phaser.Display.Color();
+    color.random();
+    color.brighten(50).saturate(100);
+    let userData = this.add.graphics();
+    userData.fillStyle(color.color, 1);
+    userData.fillRect(-width / 2, -height / 2, width, height);
+
+    // a body can have anything in its user data:
+    box.setUserData(userData);
+  }
+
+  update() {
+    // advance the simulation by 1/20 seconds
+    this.world.step(1 / 30);
+
+    // crearForces  method should be added at the end on each step
+    this.world.clearForces();
+
+    // iterate through all bodies
+    for (let b = this.world.getBodyList(); b; b = b.getNext()) {
+      // get body position
+      let bodyPosition = b.getPosition();
+
+      // get body angle, in radians
+      let bodyAngle = b.getAngle();
+
+      // get body user data, the graphics object
+      let userData = b.getUserData();
+
+      // adjust graphic object position and rotation
+      userData.x = bodyPosition.x * this.worldScale;
+      userData.y = bodyPosition.y * this.worldScale;
+      userData.rotation = bodyAngle;
+    }
+  }
+}
+
+     </script>
+   </body>
+</html>

@@ -1,0 +1,380 @@
+<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script type="text/javascript" charset="UTF-8" src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" />
+
+<style type="text/css">
+  .table {
+  font-family: Lato;
+  font-weight: 500; 
+  color: #404040;
+  }
+
+  .table thead {
+    position: sticky;
+    top: 0;
+  }
+
+  .table thead th {
+    border: 1px solid #d9d9d9;
+    background: white;
+    cursor: pointer;
+  }
+
+  .table thead th.header-label {
+    cursor: pointer;
+    /* background: linear-gradient(0deg, #e4eff8, #4578a2 5%, #e4eff8 150%); */
+    color: white;
+    border: 1px solid white;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.2rem 0.5rem;
+    text-align: center;
+  }
+
+  .table td {
+    border: 1px solid #d9d9d9;
+  }
+
+  .table .tr-inputs th {
+    position: relative;
+    padding: 0;
+    padding-bottom: 1.2rem;
+    margin: 0;
+  }
+
+  .table .tr-inputs div {
+    position: absolute;
+    display: inline-block;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  .table input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+</style>
+
+<table class="table">
+  <thead>
+    <tr>
+      <!-- <th style="width:33.333%">E / GPa </th> -->
+      <th>E / GPa </th>
+      <th>A / mm²</th>
+      <th> α / (10⁻⁶ K⁻¹)</th>
+      <th>ΔT / K</th>
+    </tr>
+  </thead>
+  <tr class="tr-inputs">
+    <!-- <tr> -->
+    <td> <input type="number" id="E" value="200"></td>
+    <td> <input type="number" id="A" value="20"></td>
+    <td> <input type="number" id="alpha" value="12"></td>
+    <td> <input type="number" id="dT" value="0.0"></td>
+  </tr>
+</table>
+<div id="box" class="box" style="width:100%; height:400px;"></div>
+<table class="table">
+  <thead>
+    <tr>
+      <th>l / m </th>
+      <th>Δℓ / m</th>
+      <th>Δl / m</th>
+      <th>S / kN</th>
+    </tr>
+  </thead>
+  <tr class="tr-inputs">
+    <td><input type="textbox" id="l"></td>
+    <td><input type="textbox" id="dell"></td>
+    <td><input type="textbox" id="dl"></td>
+    <td><input type="textbox" id="S"></td>
+  </tr>
+</table>
+
+   <script type="text/javascript">
+  JXG.Options.text.fontSize = 16;
+  JXG.Options.label.strokeColor = "#404040";
+JXG.Options.text.strokeColor = "#404040";
+JXG.Options.text.strokeWidth = 2.0;
+// JXG.Options.text.useMathJax = true;
+
+JXG.Options.segment.strokeWidth = 1.75;
+
+JXG.Options.point.snapToGrid = true;
+JXG.Options.point.size = 5;
+JXG.Options.point.fillColor = "white";
+JXG.Options.point.strokeColor = "#404040";
+JXG.Options.point.strokeWidth = 1.5;
+// JXG.Options.point.highlightStrokeColor = "#00FF00";
+JXG.Options.point.highlightFillColor = "#00FF00";
+JXG.Options.point.snapSizeX = 0.1;
+JXG.Options.point.snapSizeY = 0.1;
+JXG.Options.layer.point = 7;
+JXG.Options.layer.line = 9;
+
+var b1 = JXG.JSXGraph.initBoard('box', {
+  boundingbox: [-1.5, 6.5, 6.5, -1.5],
+  showCopyright: false,
+  showNavigation: false,
+  keepaspectratio: true,
+});
+xaxis = b1.create('axis', [
+  [0, 0],
+  [1, 0]
+], {
+  // name: '\\[ x \\,/ \\,\\mathrm{m}\\]',
+  name: 'x / m',
+  withLabel: true,
+  label: {
+    position: "rt", // possible values are 'lft', 'rt', 'top', 'bot'
+    offset: [-30, -30] // (in pixels) 
+  }
+});
+yaxis = b1.create('axis', [
+  [0, 0],
+  [0, 1]
+], {
+  // name: '\\[ y \\,/ \\,\\mathrm{m}\\]',
+  name: 'y / m',
+  withLabel: true,
+  label: {
+    position: "rt",
+    offset: [20, 0] // (in pixels)
+  }
+});
+
+
+// b1.suspendUpdate();
+
+var P1 = b1.create('point', [2, 1], {
+  name: "1",
+});
+var P2 = b1.create('point', [6, 4], {
+  name: "2"
+});
+var P1p = b1.create('point', [1, 1.5], {
+  name: "1'"
+});
+var P2p = b1.create('point', [4, 6], {
+  name: "2'"
+});
+
+tmpx = P1.X() + P2p.X() - P1p.X();
+tmpy = P1.Y() + P2p.Y() - P1p.Y();
+
+var D = b1.create('point', [tmpx, tmpy], {
+  snapToGrid: false,
+  visible: false,
+  name: "D"
+});
+
+
+var r = b1.create('segment', [P1, P2], {
+  strokeColor: '#0032FF',
+  lastArrow: {type: 6, size: 7},
+});
+
+var rp = b1.create('segment', [P1p, P2p], {
+  strokeColor: '#F01111',
+  lastArrow: {type: 6, size: 7},
+});
+
+var u1 = b1.create('segment', [P1, P1p], {
+  strokeColor: '#0CC93F',
+  lastArrow: {type: 6, size: 7},
+});
+
+var u1 = b1.create('segment', [P2, P2p], {
+  strokeColor: '#0CC93F',
+  lastArrow: {type: 6, size: 7},
+});
+
+var d = b1.create('segment', [P2, D], {
+  strokeColor: "#E500FA",
+  lastArrow: {type: 6, size: 7},
+});
+
+var rp2 = b1.create('segment', [P1, D], {
+  strokeColor: '#F01111',
+  strokeWidth: 0.75,
+  highlightStrokeOpacity: 0.0,
+});
+
+var u12 = b1.create('segment', [D, P2p], {
+  strokeColor: '#0CC93F',
+  strokeWidth: 0.5,
+  highlightStrokeOpacity: 0.0,
+});
+
+phi = r.getAngle() * 180. / Math.PI;
+
+
+tmp = r.getAngle();
+ex = Math.cos(tmp);
+ey = Math.sin(tmp);
+u1x = P1p.X() - P1.X();
+u1y = P1p.Y() - P1.Y();
+u2x = P2p.X() - P2.X();
+u2y = P2p.Y() - P2.Y();
+dx = u2x - u1x;
+dy = u2y - u1y;
+dl = ex * dx + ey * dy;
+tmpx = P2.X() + dl * ex;
+tmpy = P2.Y() + dl * ey;
+var A = b1.create('point', [tmpx, tmpy], {
+  snapToGrid: false,
+  visible: false,
+  name: "A"
+
+});
+
+dL = rp.L() - r.L();
+tmpx = P2.X() + dL * ex;
+tmpy = P2.Y() + dL * ey;
+var B = b1.create('point', [tmpx, tmpy], {
+  snapToGrid: false,
+  visible: false,
+  name: "B"
+});
+
+
+b1.on('move', function() {
+  P1.moveTo([P1.X(), P1.Y()]);
+  P2.moveTo([P2.X(), P2.Y()]);
+  P1p.moveTo([P1p.X(), P1p.Y()]);
+  P2p.moveTo([P2p.X(), P2p.Y()]);
+  tmpx = P1.X() + P2p.X() - P1p.X();
+  tmpy = P1.Y() + P2p.Y() - P1p.Y();
+  D.moveTo([tmpx, tmpy]);
+  tmp = r.getAngle();
+  ex = Math.cos(tmp);
+  ey = Math.sin(tmp);
+  u1x = P1p.X() - P1.X();
+  u1y = P1p.Y() - P1.Y();
+  u2x = P2p.X() - P2.X();
+  u2y = P2p.Y() - P2.Y();
+  dx = u2x - u1x;
+  dy = u2y - u1y;
+  dl = ex * dx + ey * dy;
+  // Output:
+  document.getElementById("l").value = String(parseFloat(r.L().toFixed(2)));
+  document.getElementById("dl").value = String(parseFloat(dl.toFixed(2)));
+
+  // .replace(".",",")
+  var E_GPa = document.getElementById("E").value;
+  E_SI = E_GPa * 1.e9; // 1 GPa = 10⁹ Pa
+  var A_mm2 = document.getElementById("A").value;
+  A_SI = A_mm2 / 1.e6; // 1 m² = 10⁶ mm²
+  var alpha = document.getElementById("alpha").value;
+  alpha_SI = alpha / 1.e6;
+  var dT_SI = document.getElementById("dT").value;
+
+
+  var S_SI = E_SI * A_SI * (dl / r.L() - alpha_SI * dT_SI);
+  S_kN = S_SI / 1000.;
+  var tmp = String(parseFloat(S_kN.toFixed(1)));
+  document.getElementById("S").value = tmp;
+
+
+  // document.getElementById("S").value = parseFloat(S.toFixed(3));
+
+  tmpx = P2.X() + dl * ex;
+  tmpy = P2.Y() + dl * ey;
+  A.moveTo([tmpx, tmpy]);
+  dL = rp.L() - r.L();
+  document.getElementById("dell").value = String(parseFloat(dL.toFixed(2)));
+  tmpx = P2.X() + dL * ex;
+  tmpy = P2.Y() + dL * ey;
+  B.moveTo([tmpx, tmpy]);
+
+
+});
+
+var poly = b1.create('polygon', ["1", "1'", "2'", D], {
+  fillColor: "red",
+  fillOpacity: 0.0,
+  highlightFillColor: "red",
+  highlightFillOpacity: 0.1,
+  borders: {
+    strokeColor: '#000000ff',
+    strokeOpacity: 0.0,
+    highlightStrokeColor: '#000000ff',
+    highlightStrokeOpacity: 0.0,
+  },
+});
+
+
+var poly = b1.create('polygon', ["2", D, A], {
+  fillColor: "#bf00bf32",
+  fillOpacity: 0.0,
+  highlightFillColor: "#bf00bf32",
+  highlightFillOpacity: 1.0,
+  borders: {
+    strokeColor: "#E500FA",
+    strokeOpacity: 1.0,
+    highlightStrokeColor: "#E500FA",
+    highlightStrokeOpacity: 0.0,
+  },
+});
+
+
+
+sec1 = b1.create('sector', [P1, D, P2], {
+  selection: "minor",
+  strokeColor: "grey",
+  strokeOpacity: 0.0,
+  highlightStrokeColor: 'grey',
+  highlightStrokeOpacity: 0.0,
+  fillColor: "grey",
+  fillOpacity: 0.1,
+  highlightFillColor: "red",
+  highlightFillOpacity: 0.1,
+});
+
+b1.unsuspendUpdate();
+
+// var t_dl = b1.create('text', [7.0, 5.5 ,
+//   function() {
+//     dL = rp.L() - r.L();
+//     dL = dL.toFixed(3);
+//     dL = dL.replace(".", "{,}");
+
+//     rx = P2.X() - P1.X();
+//     ry = P2.Y() - P1.Y();
+//     u1x = P1p.X() - P1.X();
+//     u1y = P1p.Y() - P1.Y();
+//     u2x = P2p.X() - P2.X();
+//     u2y = P2p.Y() - P2.Y();
+//     dx = u2x - u1x;
+//     dy = u2y - u1y;
+
+//     p = r.getAngle();
+//     ex = Math.cos(p);
+//     ey = Math.sin(p);
+//     dl = ex * dx + ey * dy;
+//     dl = dl.toFixed(3);
+//     dl = dl.replace(".", "{,}");
+//     pdeg = p*180./Math.PI;
+//     pdeg = pdeg.toFixed(1);
+//     pdeg = pdeg.replace(".", "{,}");
+
+
+//     return "\\[ \\begin{align*} \\Delta \\ell &\\stackrel{0{,}001}{\\approx} " + dL + "\\,\\mathrm{m} \\\\ \\Delta l &\\stackrel{0{,}001}{\\approx} " + dl + "\\,\\mathrm{m} \\end{align*} \\]";
+
+//   }
+
+// ]);
+
+
+// return "\\[ \\begin{align*} \\varphi &\\stackrel{0{,}001}{\\approx} " + pdeg + "^\\circ\\\\ \\\\ \\Delta \\ell &\\stackrel{0{,}01}{\\approx} " + dL + "\\,\\mathrm{m} \\\\ \\Delta l &\\stackrel{0{,}01}{\\approx} " + dl + "\\,\\mathrm{m} \\end{align*} \\]";
+
+   </script>
+   
+
+     
