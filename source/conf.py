@@ -17,11 +17,12 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Mohrscher Kreis'
+project = 'mohr.tm-tutor.de'
 copyright = u'Dr. Kai Kaßbohm'
 author = u'Dr. Kai Kaßbohm'
 release = ''
-version = '<a href="https://drive.google.com/drive/folders/1PqWEN0BZXunZsGHD9-hy59V6xMMCAK8f?usp=sharing" style="color:#ffffff; font-weight: bold;">Dr. Kai</a>'
+# version = '<a href="https://drive.google.com/drive/folders/1PqWEN0BZXunZsGHD9-hy59V6xMMCAK8f?usp=sharing" style="color:#ffffff; font-weight: bold;">Dr. Kai</a>'
+version = 'Dr. Kai'
 language = 'de'
 master_doc = 'index'
 
@@ -144,7 +145,17 @@ exclude_patterns = [
 # -- Options for HTML output -------------------------------------------------
 html_theme = 'sphinx_rtd_theme'
 
+# html_theme = "furo"
+
+
 # templates_path = ['_templates']
+
+
+# html_context = {
+#     'current_language': 'en',
+#     'languages': [["en", "file:///home/kai/A_Sphinx/Teach/mohr.tm-tutor.de/build/en/html"], ["de", "file:///home/kai/A_Sphinx/Teach/mohr.tm-tutor.de/build/de/html"]]
+#   }
+
 html_static_path = ['_static']
 
 # These paths are either relative to html_static_path:
@@ -152,7 +163,7 @@ html_css_files = [
     'css/custom.css',
 ]
 
-locale_dirs = ['locale/'] 
+# locale_dirs = ['locale/'] 
 
 html_title = 'Mohr'
 html_short_title = 'Mohr'
@@ -180,7 +191,7 @@ html_theme_options = {
     'navigation_depth': 10,
     'logo_only': False,
     'display_version': True,
-    'prev_next_buttons_location': "bottom",
+    'prev_next_buttons_location': "both",
     # 'prev_next_buttons_location': None,
     # 'style_nav_header_background': '#2980b9',
     'style_nav_header_background': '#343131',

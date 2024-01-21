@@ -8,8 +8,12 @@
 
    <br />
 
+.. _vector_2D:
+
 Vektor 2D
 ---------
+
+.. _vector_2D_matrix:
 
 1. Berechnung mit Matrizen
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -91,6 +95,8 @@ Vektor 2D
 
    .. include:: ../../sympy.rst
 
+.. _vector_2D_mohr:
+
 2. Ablesen am Mohrschen Kreis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -124,20 +130,24 @@ Vektor 2D
 .. admonition:: Beispiel: Ablesen am Kreis
    :class: hint
 
-   1.
-      **Oben** die **gegebenen** Komponenten eintragen, z.B.:
+   **Gegeben**
+
+   *
+      Rechts die gegebenen Komponenten eintragen, z.B.:
       
       .. math::
          
          (v_x, v_y)= (3, 4)
 
-   2.
-      **Unten** am Schieberegler den **gegebenen** Winkel einstellen, z.B. :math:`\varphi = 30^\circ.`
-         
-   3.
-      Die gesuchten Komponenten :math:`(v_{\bar x}, v_{\bar y})` ablesen an den Punkten für :math:`\varphi` und :math:`\varphi\pm 180^\circ:`
+   *
+      Rechts am Schieberegler den gegebenen Winkel einstellen, z.B. :math:`\varphi = 30^\circ.`
+   
+   **Gesucht**:
 
-      Am hellblauen Punkt liest man ab:
+   *
+
+      Am hellblauen Punkt liest man für z.B. für :math:`\varphi = 30^\circ` ab:
+
       
       .. math::
          :nowrap:
@@ -145,8 +155,9 @@ Vektor 2D
          \begin{align*}
          (v_{\bar x}, v_{\bar y})   & \stackrel{0{,}01}{\approx} (4.6, 1.96) \\
          \end{align*}
-      
-      Und am magentafarbenen Punkt (gegenüber vom hellblauen Punkt) liest man ab:
+
+   * 
+      Wenn man rechts noch den **Pt. at φ ± 180°** einschaltet, liest man an diesem magentafarbenen Punkt z.B. für :math:`\varphi = 30^\circ\pm 180^\circ` ab:
       
       .. math::
          :nowrap:
@@ -154,3 +165,5 @@ Vektor 2D
          \begin{align*}
          (-v_{\bar x}, -v_{\bar y}) & \stackrel{0{,}01}{\approx} (-4.6, -1.96) 
          \end{align*}
+
+      Dazu Maus über diesen Punkt bewegen.

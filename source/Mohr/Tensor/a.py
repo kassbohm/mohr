@@ -44,7 +44,7 @@ def iso_round(obj, pv,
 prec = "0.01"
 
 pprint("\n(x, y)-Comp's:")
-Txx, Txy, Tyy = 2, 1, 1.5
+Txx, Tyy, Txy = 2, 1.5, 1
 T = Matrix([[Txx ,Txy],[Txy, Tyy]])
 tmp = T
 pprint(tmp)

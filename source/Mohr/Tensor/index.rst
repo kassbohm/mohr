@@ -8,9 +8,13 @@
 
    <br />
 
-          
+.. _tensor_2D:
+
 Tensor 2D
 ---------
+
+.. _tensor_2D_matrix:
+
 
 1. Berechnung mit Matrizen
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -86,6 +90,7 @@ Tensor 2D
 
    .. include:: ../../sympy.rst
 
+.. _tensor_2D_mohr:
 
 2. Ablesen am Mohrschen Kreis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -120,21 +125,24 @@ Tensor 2D
 .. admonition:: Beispiel: Ablesen am Kreis
    :class: hint
 
-   1.
-      **Oben** die **gegebenen** Komponenten eintragen, z.B.:
+   **Gegeben**
+
+   *
+      Rechts die gegebenen Komponenten eintragen, z.B.:
       
       .. math::
          
          \begin{bmatrix}T_{xx} & T_{xy} \\   \mathsf{sym} & T_{yy}   \end{bmatrix}   =   \begin{bmatrix}   2 & 1 \\   \mathsf{sym} & 1{,}5   \end{bmatrix}
 
-   2. 
-      **Unten** am Schieberegler den **gegebenen** Winkel einstellen, z.B. :math:`\varphi = 20^\circ.`
+   *
+      Rechts am Schieberegler den gegebenen Winkel einstellen, z.B. :math:`\varphi = 20^\circ.`
+   
+   **Gesucht**:
 
-   3.
+   *
 
-      Die gesuchten Komponenten ablesen an den Punkten für :math:`\varphi` und :math:`\varphi\pm 90^\circ:`
+      Am hellblauen Punkt liest man für z.B. für :math:`\varphi = 20^\circ` ab:
 
-      Am hellblauen Punkt liest man ab:
       
       .. math::
          :nowrap:
@@ -143,7 +151,8 @@ Tensor 2D
          (T_{\bar x \bar x}, T_{\bar x\bar y}) \stackrel{0{,}01}{\approx}  (2.58, 0.61) \\
          \end{align*}
       
-      Und am magentafarbenen Punkt (gegenüber vom hellblauen Punkt) liest man ab:
+   * 
+      Wenn man rechts noch den **Pt. at φ ± 90°** einschaltet, liest man an diesem magentafarbenen Punkt z.B. für :math:`\varphi = 20^\circ\pm 180^\circ` ab:
       
       .. math::
          :nowrap:
@@ -151,6 +160,8 @@ Tensor 2D
          \begin{align*}
          (T_{\bar y \bar y}, -T_{\bar x\bar y})\stackrel{0{,}01}{\approx}  (0.92, - 0.61)
          \end{align*}
+
+      Dazu Maus über diesen Punkt bewegen.
 
 .. :raw-html:`<details><summary>Mohrscher Kreis</summary><div class="myDiv"><p>`
 
@@ -168,7 +179,7 @@ Tensor 2D
 ..          \end{bmatrix}
 
 .. *
-..     **Unten** am Schieberegler den Winkel :math:`\varphi` einstellen, um den das zweite Bezugssystem relati
+..     **Rechts** am Schieberegler den Winkel :math:`\varphi` einstellen, um den das zweite Bezugssystem relati
 
 
 .. :raw-html:`</p></div></details>`
